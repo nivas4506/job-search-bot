@@ -1,5 +1,12 @@
 # Job Search Bot
 
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-API%20Deploy-000000?logo=vercel&logoColor=white)
+![Schedule](https://img.shields.io/badge/Schedule-Every%203%20Hours-0F766E)
+![Region](https://img.shields.io/badge/Region-India%20Only-F97316)
+![Apply%20Links](https://img.shields.io/badge/Links-Direct%20Apply%20Only-7C3AED)
+
 Automated alerts for high-value opportunities, focused on India.
 
 - SDE internship applications at top product companies
