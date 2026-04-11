@@ -1,0 +1,24 @@
+services:
+  jobs-alerts:
+    build: .
+    container_name: jobs-alerts
+    environment:
+      RUN_TARGET: jobs
+    env_file:
+      - .env
+    volumes:
+      - ./outputs:/app/outputs
+      - ./data:/app/data
+      - ./config:/app/config
+
+  hackathon-alerts:
+    build: .
+    container_name: hackathon-alerts
+    environment:
+      RUN_TARGET: hackathons
+    env_file:
+      - .env
+    volumes:
+      - ./outputs:/app/outputs
+      - ./data:/app/data
+      - ./config:/app/config

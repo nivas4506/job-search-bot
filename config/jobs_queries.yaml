@@ -1,0 +1,61 @@
+search_engine: google_html
+recent_days: 120
+direct_job_links: true
+direct_apply_only: true
+india_only: true
+queries:
+  - name: Microsoft Intern (India)
+    query: Microsoft ("software engineer intern" OR "sde intern" OR internship) India careers
+    include_keywords: [intern, internship, software, engineer, student, fresher]
+    allowed_domains: [careers.microsoft.com, jobs.careers.microsoft.com]
+    required_url_keywords: [intern, universityinternship, exploremicrosoft, job, apply]
+    exclude_keywords: [senior, staff, manager, principal, lead, architect, experienced]
+
+  - name: Google Intern (India)
+    query: Google ("software engineer intern" OR "software intern" OR internship) India careers
+    include_keywords: [intern, internship, software, engineer, student, fresher]
+    allowed_domains: [careers.google.com]
+    required_url_keywords: [intern, jobs, apply, position, search]
+    exclude_keywords: [senior, staff, manager, principal, lead, architect, experienced]
+
+  - name: Amazon Intern (India)
+    query: Amazon ("software development engineer intern" OR "sde intern" OR internship OR "student program") India jobs
+    include_keywords: [intern, internship, software, engineer, student, fresher]
+    allowed_domains: [amazon.jobs]
+    required_url_keywords: [intern, jobs, apply, jobid]
+    exclude_keywords: [senior, staff, manager, principal, lead, architect, experienced]
+
+  - name: Adobe/Atlassian/Uber Intern
+    query: (Adobe OR Atlassian OR Uber) ("software engineer intern" OR "sde intern" OR internship) India careers
+    include_keywords: [intern, software, engineer, internship, student, fresher]
+    allowed_domains: [careers.adobe.com, careers.atlassian.com, careers.uber.com]
+    required_url_keywords: [intern, jobs, apply, position]
+    exclude_keywords: [senior, staff, manager, principal, lead, architect, experienced]
+
+  - name: Apple/NVIDIA/Salesforce Intern
+    query: (Apple OR NVIDIA OR Salesforce) ("software engineer intern" OR "software intern" OR internship) India careers
+    include_keywords: [intern, software, engineer, internship, student, fresher]
+    allowed_domains: [jobs.apple.com, nvidia.wd5.myworkdayjobs.com, salesforce.wd12.myworkdayjobs.com, salesforce.wd1.myworkdayjobs.com, careers.salesforce.com]
+    required_url_keywords: [intern, jobs, apply, position, myworkdayjobs]
+    exclude_keywords: [senior, staff, manager, principal, lead, architect, experienced]
+
+  - name: Oracle/Cisco/SAP/IBM Intern
+    query: (Oracle OR Cisco OR SAP OR IBM) ("software engineer intern" OR "software intern" OR internship) India careers
+    include_keywords: [intern, software, engineer, internship, student, fresher]
+    allowed_domains: [careers.oracle.com, jobs.cisco.com, jobs.sap.com, careers.ibm.com]
+    required_url_keywords: [intern, jobs, apply, position]
+    exclude_keywords: [senior, staff, manager, principal, lead, architect, experienced]
+
+  - name: Walmart/Intel/Qualcomm/Samsung Intern
+    query: (Walmart OR Intel OR Qualcomm OR Samsung) ("software engineer intern" OR "software intern" OR internship) India careers
+    include_keywords: [intern, software, engineer, internship, student, fresher]
+    allowed_domains: [careers.walmart.com, jobs.intel.com, careers.qualcomm.com, sec.wd3.myworkdayjobs.com, samsungcareers.com]
+    required_url_keywords: [intern, jobs, apply, position, myworkdayjobs]
+    exclude_keywords: [senior, staff, manager, principal, lead, architect, experienced]
+
+  - name: Product Companies Intern India
+    query: ("product company" OR "top tech company" OR "global capability center") (internship OR "software engineer intern" OR "sde intern") India careers
+    include_keywords: [intern, software, engineer, internship, student, fresher]
+    allowed_domains: [careers.microsoft.com, careers.google.com, amazon.jobs, careers.adobe.com, careers.atlassian.com, careers.uber.com, jobs.careers.microsoft.com, jobs.apple.com, nvidia.wd5.myworkdayjobs.com, careers.salesforce.com, careers.oracle.com, jobs.cisco.com, jobs.sap.com, careers.ibm.com, careers.walmart.com, jobs.intel.com, careers.qualcomm.com, samsungcareers.com]
+    required_url_keywords: [intern, jobs, apply, position, universityinternship]
+    exclude_keywords: [senior, staff, manager, principal, lead, architect, experienced]

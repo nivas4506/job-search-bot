@@ -1,0 +1,28 @@
+search_engine: bing_rss
+recent_days: 90
+india_only: true
+queries:
+  - name: Devpost India Hackathons
+    query: site:devpost.com (hackathon OR challenge) (India OR Bengaluru OR Hyderabad) (register OR registration OR apply)
+    include_keywords: [hackathon, register, registration, apply]
+    exclude_keywords: [closed, ended, results, winner, winners, completed]
+
+  - name: Unstop Hackathons
+    query: site:unstop.com (hackathon OR coding challenge) (India OR students) (register OR registration OR apply)
+    include_keywords: [hackathon, students, register, registration, apply]
+    exclude_keywords: [closed, ended, results, winner, winners, completed]
+
+  - name: MLH / Student Events
+    query: (site:mlh.io OR site:hack2skill.com OR site:devfolio.co) (hackathon OR challenge) (India OR students) (register OR registration OR apply)
+    include_keywords: [hackathon, register, registration, apply, students]
+    exclude_keywords: [closed, ended, results, winner, winners, completed]
+
+  - name: Company Hosted Hackathons India
+    query: (Google OR Microsoft OR Amazon OR Adobe OR Intel OR Qualcomm OR Samsung OR Walmart) (hackathon OR coding challenge) (India OR students) (register OR registration OR apply)
+    include_keywords: [hackathon, register, registration, apply, students]
+    exclude_keywords: [closed, ended, winner, winners, results, completed]
+
+  - name: Major India Tech Events
+    query: ("coding challenge" OR "developer challenge" OR "innovation challenge" OR "hackathon") (India OR students) (register OR registration OR apply)
+    include_keywords: [challenge, register, registration, apply, students]
+    exclude_keywords: [closed, ended, winner, winners, results, completed]
