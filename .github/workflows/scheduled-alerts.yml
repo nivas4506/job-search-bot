@@ -1,0 +1,97 @@
+name: Scheduled Alerts
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: scheduled-alerts
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  send-alerts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
+      SMTP_HOST: ${{ secrets.SMTP_HOST }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      SMTP_USE_TLS: ${{ secrets.SMTP_USE_TLS }}
+      ALERT_FROM_EMAIL: ${{ secrets.ALERT_FROM_EMAIL }}
+      ALERT_TO_EMAIL: ${{ secrets.ALERT_TO_EMAIL }}
+      MAX_RESULTS_PER_QUERY: ${{ secrets.MAX_RESULTS_PER_QUERY }}
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Prepare runtime directories
+        run: |
+          mkdir -p data outputs
+
+      - name: Restore dedupe cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/
+          key: seen-items-${{ github.run_id }}
+          restore-keys: |
+            seen-items-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate required secrets
+        run: |
+          python - <<'PY'
+          import os
+          required = [
+              "EMAIL_ENABLED",
+              "SMTP_HOST",
+              "SMTP_PORT",
+              "SMTP_USERNAME",
+              "SMTP_PASSWORD",
+              "SMTP_USE_TLS",
+              "ALERT_FROM_EMAIL",
+              "ALERT_TO_EMAIL",
+              "MAX_RESULTS_PER_QUERY",
+          ]
+          missing = [key for key in required if not os.getenv(key, "").strip()]
+          if missing:
+              raise SystemExit(f"Missing GitHub Actions secrets: {', '.join(missing)}")
+          PY
+
+      - name: Run jobs alerts
+        run: python src/run_jobs_alerts.py
+
+      - name: Run hackathon alerts
+        run: python src/run_hackathon_alerts.py
+
+      - name: Upload generated reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alert-reports-${{ github.run_id }}
+          path: outputs/*.md
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Save dedupe cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/
+          key: seen-items-${{ github.run_id }}

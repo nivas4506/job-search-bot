@@ -152,6 +152,30 @@ Runner script:
 
 Task Scheduler can run it every 3 hours (already configured in this workspace as `Job Alerts Every 3 Hours`).
 
+## Scheduling (GitHub Actions)
+
+This repo also includes [.github/workflows/scheduled-alerts.yml](.github/workflows/scheduled-alerts.yml),
+which runs both alert pipelines every 3 hours on GitHub Actions.
+
+Required GitHub Actions secrets:
+
+- `EMAIL_ENABLED`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `SMTP_USE_TLS`
+- `ALERT_FROM_EMAIL`
+- `ALERT_TO_EMAIL`
+- `MAX_RESULTS_PER_QUERY`
+
+Optional secrets:
+
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+
+Without Upstash, the workflow falls back to a GitHub Actions cache for `data/seen_items.db`.
+
 ## Operational notes
 
 - Local dedupe persists in SQLite ([data/seen_items.db](data/seen_items.db))
