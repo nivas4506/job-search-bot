@@ -25,8 +25,12 @@ import smtplib
 BING_RSS_URL = "https://www.bing.com/search"
 GOOGLE_SEARCH_URL = "https://www.google.com/search"
 JINA_MIRROR_URL = "https://r.jina.ai/http://www.google.com/search"
-DB_PATH = Path("data") / "seen_items.db"
-OUTPUT_DIR = Path("outputs")
+if os.getenv("VERCEL"):
+    DB_PATH = Path("/tmp") / "seen_items.db"
+    OUTPUT_DIR = Path("/tmp") / "outputs"
+else:
+    DB_PATH = Path("data") / "seen_items.db"
+    OUTPUT_DIR = Path("outputs")
 
 APPLICATION_PATH_KEYWORDS = (
     "apply",
@@ -123,6 +127,41 @@ def _db_conn() -> sqlite3.Connection:
     )
     conn.commit()
     return conn
+
+
+def _upstash_config() -> tuple[str, str] | None:
+    url = os.getenv("UPSTASH_REDIS_REST_URL", "").strip()
+    token = os.getenv("UPSTASH_REDIS_REST_TOKEN", "").strip()
+    if not (url and token):
+        return None
+    return url, token
+
+
+def _upstash_sadd(set_key: str, value: str) -> bool:
+    cfg = _upstash_config()
+    if not cfg:
+        return False
+    base_url, token = cfg
+    endpoint = f"{base_url}/sadd/{set_key}/{value}"
+    response = requests.post(endpoint, headers={"Authorization": f"Bearer {token}"}, timeout=15)
+    response.raise_for_status()
+    payload = response.json()
+    # Upstash returns 1 when newly inserted, 0 when already present.
+    return bool(payload.get("result", 0))
+
+
+def _only_new_items_upstash(items: list[AlertItem], alert_type: str) -> list[AlertItem]:
+    new_items: list[AlertItem] = []
+    set_key = f"seen:{alert_type.lower().replace(' ', '_')}"
+    for item in items:
+        try:
+            inserted = _upstash_sadd(set_key, item.dedupe_key)
+        except Exception as exc:
+            print(f"[WARN] Upstash dedupe failed: {exc}")
+            inserted = True
+        if inserted:
+            new_items.append(item)
+    return new_items
 
 
 def load_config(config_path: str) -> dict:
@@ -415,6 +454,9 @@ def collect_items(config: dict, max_results_per_query: int) -> list[AlertItem]:
 
 
 def only_new_items(items: list[AlertItem], alert_type: str) -> list[AlertItem]:
+    if _upstash_config():
+        return _only_new_items_upstash(items, alert_type)
+
     ensure_dirs()
     now_utc = datetime.utcnow().isoformat(timespec="seconds") + "Z"
 

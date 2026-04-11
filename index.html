@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Job Search Bot</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f3efe6;
+        --surface: rgba(255, 252, 245, 0.86);
+        --text: #14213d;
+        --muted: #4f5d75;
+        --accent: #d66853;
+        --accent-dark: #a73f30;
+        --border: rgba(20, 33, 61, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(214, 104, 83, 0.22), transparent 32%),
+          radial-gradient(circle at bottom right, rgba(20, 33, 61, 0.18), transparent 28%),
+          linear-gradient(135deg, #f8f4ea 0%, var(--bg) 100%);
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 48px 20px 72px;
+      }
+
+      .hero {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        padding: 36px;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 24px 60px rgba(20, 33, 61, 0.1);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2.3rem, 5vw, 4.6rem);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      p {
+        margin: 0;
+        max-width: 760px;
+        line-height: 1.6;
+        color: var(--muted);
+        font-size: 1.04rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 18px;
+        margin-top: 28px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 22px;
+      }
+
+      .card h2 {
+        margin: 0 0 10px;
+        font-size: 1.35rem;
+      }
+
+      .card a {
+        color: var(--accent-dark);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .card a:hover {
+        color: var(--accent);
+      }
+
+      code {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(20, 33, 61, 0.08);
+        font-size: 0.92rem;
+      }
+
+      .note {
+        margin-top: 22px;
+        padding: 16px 18px;
+        border-left: 4px solid var(--accent);
+        background: rgba(214, 104, 83, 0.08);
+        border-radius: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <h1>Job Search Bot</h1>
+        <p>
+          This Vercel preview exposes the existing automation as on-demand HTTP endpoints.
+          It is intentionally stateless in deployment mode, so local SQLite dedupe and file-based
+          reports remain part of the local workflow rather than the hosted preview.
+        </p>
+
+        <div class="grid">
+          <article class="card">
+            <h2>Jobs API</h2>
+            <p>Fetch current SDE intern matches as JSON or Markdown.</p>
+            <p><a href="/api/jobs">/api/jobs</a></p>
+            <p><a href="/api/jobs?format=markdown">/api/jobs?format=markdown</a></p>
+          </article>
+
+          <article class="card">
+            <h2>Hackathons API</h2>
+            <p>Fetch current hackathon matches as JSON or Markdown.</p>
+            <p><a href="/api/hackathons">/api/hackathons</a></p>
+            <p><a href="/api/hackathons?format=markdown">/api/hackathons?format=markdown</a></p>
+          </article>
+
+          <article class="card">
+            <h2>Health</h2>
+            <p>Check preview status and deployment mode.</p>
+            <p><a href="/api/health">/api/health</a></p>
+            <p><code>max_results=5</code> is supported on API routes.</p>
+          </article>
+        </div>
+
+        <div class="note">
+          Deployed mode limitation: Vercel Functions provide read-only filesystems with writable
+          <code>/tmp</code> scratch space only, and SQLite is not durable there, so this preview
+          does not persist dedupe state between invocations.
+        </div>
+      </section>
+    </main>
+  </body>
+  </html>

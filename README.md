@@ -1,162 +1,160 @@
-# Job + Hackathon Alerts Automation
+# Job Search Bot
 
-This project gives you 2 automations:
+A practical automation bot for two high-signal streams:
 
-1. SDE intern job alerts for top product companies (Microsoft, Google, Amazon, and more)
-2. Hackathon alerts for major India events
+1. SDE internship applications at top product companies
+2. Major India-focused hackathons and coding challenges
 
-It runs via search RSS feeds, filters by keywords, deduplicates results, and writes reports.
-Optionally, it can email alerts automatically.
-Email alerts are sent with a styled HTML layout and a plain-text fallback.
-Jobs alerts now use Google search results.
-Job links are resolved with a best-effort step to open direct application pages.
-When a direct application page cannot be found, alerts explicitly say: "Direct application page not available for this role." and do not include a generic homepage link.
+It discovers opportunities, filters noise, prioritizes direct apply links, enforces India-only mode, and sends formatted email alerts.
 
-## Project Structure
+## Highlights
 
-- `config/jobs_queries.yaml` - Internship job search queries
-- `config/hackathons_queries.yaml` - Hackathon search queries
-- `src/alerts.py` - Shared engine (fetch, filter, dedupe, notify)
-- `src/run_jobs_alerts.py` - Run job alerts flow
-- `src/run_hackathon_alerts.py` - Run hackathon alerts flow
-- `outputs/` - Markdown reports from each run
-- `data/seen_items.db` - Deduplication database
+- Direct application link prioritization
+- India-only filtering support
+- Query-based company/event targeting
+- Email alerts with structured role details
+- Local run, Docker run, and Vercel API support
+- Stateful dedupe locally (SQLite) and optional serverless dedupe via Upstash
 
-## Setup (Windows)
+## Project Layout
 
-### 1) Create and activate virtual environment
+- `src/alerts.py` - core pipeline (fetch, filter, dedupe, format, notify)
+- `src/run_jobs_alerts.py` - jobs runner
+- `src/run_hackathon_alerts.py` - hackathons runner
+- `config/jobs_queries.yaml` - jobs query rules
+- `config/hackathons_queries.yaml` - hackathon query rules
+- `api/jobs.py` - Vercel API endpoint for jobs
+- `api/hackathons.py` - Vercel API endpoint for hackathons
+- `api/health.py` - Vercel health endpoint
+- `vercel.json` - Vercel function config
+- `outputs/` - generated markdown reports
+- `data/seen_items.db` - local dedupe store
+
+## Quick Start (Local Python)
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-```
-
-### 2) Install dependencies
-
-```powershell
 pip install -r requirements.txt
 ```
 
-### 3) Optional email configuration
+Copy environment template:
 
-Copy `.env.example` to `.env` and fill SMTP values.
+```powershell
+copy .env.example .env
+```
 
-For Gmail, use App Password (not your normal password).
-
-## Run Manually
-
-### Job alerts
+Run jobs:
 
 ```powershell
 python src/run_jobs_alerts.py
 ```
 
-### Hackathon alerts
+Run hackathons:
 
 ```powershell
 python src/run_hackathon_alerts.py
 ```
 
-Reports are saved into `outputs/`.
+## Docker Usage
 
-## Run With Docker
-
-This project can run in containers using `docker` and `docker compose`.
-
-### 1) Build image
+Build:
 
 ```powershell
 docker compose build
 ```
 
-### 2) Run jobs alerts once
+Run jobs once:
 
 ```powershell
 docker compose run --rm jobs-alerts
 ```
 
-### 3) Run hackathon alerts once
+Run hackathons once:
 
 ```powershell
 docker compose run --rm hackathon-alerts
 ```
 
-Container runs use your local `.env` and persist outputs in `outputs/` and dedupe data in `data/`.
+## Vercel Deployment
 
-## Customize Queries
+Current Vercel endpoints:
 
-Edit:
+- `/api/jobs`
+- `/api/hackathons`
+- `/api/health`
+
+Useful query params for `/api/jobs` and `/api/hackathons`:
+
+- `max_results=5`
+- `format=markdown`
+
+Example:
+
+- `/api/jobs?max_results=5`
+- `/api/hackathons?format=markdown`
+
+### Vercel environment variables
+
+Required:
+
+- `EMAIL_ENABLED`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `SMTP_USE_TLS`
+- `ALERT_FROM_EMAIL`
+- `ALERT_TO_EMAIL`
+- `MAX_RESULTS_PER_QUERY`
+
+Optional:
+
+- `CRON_SECRET`
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+
+## Query Configuration
+
+Editable files:
 
 - `config/jobs_queries.yaml`
 - `config/hackathons_queries.yaml`
 
-Each query supports:
+Per-query keys:
 
 - `name`
 - `query`
 - `include_keywords`
-- `include_all_keywords` (all must appear)
+- `include_all_keywords`
 - `exclude_keywords`
-- `allowed_domains` (restrict to trusted company domains)
-- `required_url_keywords` (prefer direct apply/job URLs)
+- `allowed_domains`
+- `required_url_keywords`
 
-Global config supports:
+Global keys:
 
-- `recent_days` (drops older items when publish date is available)
+- `recent_days`
+- `direct_job_links`
+- `direct_apply_only`
+- `india_only`
 
-Tips:
+## Alert Rules in Plain Words
 
-- Add more companies in the `query` using `OR`.
-- Keep `include_keywords` strict to reduce spam.
-- Use `include_all_keywords: [india]` to force India relevance.
-- Add `exclude_keywords` like `senior`, `closed`, `ended`.
+- Only trusted domains are allowed (when configured).
+- Only direct application pages are retained in strict mode.
+- If direct apply page is not found, message explicitly says so.
+- India-only mode drops non-India opportunities.
 
-## Automate with Task Scheduler
+## Scheduling (Windows)
 
-Create 2 scheduled tasks.
+The repo includes a task-runner script:
 
-### Task 1: Jobs (every 6 hours)
+- `run_jobs_alerts_docker.bat`
 
-Program/script:
-
-```text
-C:\Users\A\OneDrive\Documents\Jobs automations\.venv\Scripts\python.exe
-```
-
-Arguments:
-
-```text
-src/run_jobs_alerts.py
-```
-
-Start in:
-
-```text
-C:\Users\A\OneDrive\Documents\Jobs automations
-```
-
-### Task 2: Hackathons (daily)
-
-Program/script:
-
-```text
-C:\Users\A\OneDrive\Documents\Jobs automations\.venv\Scripts\python.exe
-```
-
-Arguments:
-
-```text
-src/run_hackathon_alerts.py
-```
-
-Start in:
-
-```text
-C:\Users\A\OneDrive\Documents\Jobs automations
-```
+You can schedule it via Task Scheduler (already configured in this workspace as `Job Alerts Every 3 Hours`).
 
 ## Notes
 
-- First run may include many old links. Later runs only show new links due to dedupe.
-- Search RSS can include noisy results. Tune your YAML keywords for better precision.
-- If email is not configured, reports are still generated locally.
+- Local dedupe uses SQLite in `data/seen_items.db`.
+- Serverless filesystems are ephemeral; use Upstash for persistent dedupe on Vercel.
+- Search result quality depends on query quality; tune YAML rules regularly.
