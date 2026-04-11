@@ -675,9 +675,10 @@ def send_email_if_configured(subject: str, markdown_text: str, alert_type: str, 
         return False
 
 
-def run_alert_pipeline(config_path: str, alert_type: str) -> int:
+def run_alert_pipeline_summary(config_path: str, alert_type: str, max_results: int | None = None) -> dict:
     load_dotenv()
-    max_results = int(os.getenv("MAX_RESULTS_PER_QUERY", "20"))
+    if max_results is None:
+        max_results = int(os.getenv("MAX_RESULTS_PER_QUERY", "20"))
 
     config = load_config(config_path)
     items = collect_items(config, max_results)
@@ -701,4 +702,18 @@ def run_alert_pipeline(config_path: str, alert_type: str) -> int:
     print(f"[{alert_type}] Report saved: {report_path}")
     print(f"[{alert_type}] Email sent: {emailed}")
 
-    return len(new_items)
+    return {
+        "alert_type": alert_type,
+        "total_matched": len(deduped_items),
+        "new_count": len(new_items),
+        "report_path": str(report_path),
+        "emailed": emailed,
+        "items": deduped_items,
+        "new_items": new_items,
+        "markdown": md,
+    }
+
+
+def run_alert_pipeline(config_path: str, alert_type: str) -> int:
+    summary = run_alert_pipeline_summary(config_path=config_path, alert_type=alert_type)
+    return int(summary["new_count"])

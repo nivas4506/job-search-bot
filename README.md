@@ -1,46 +1,51 @@
 # Job Search Bot
 
-A practical automation bot for two high-signal streams:
+Automated alerts for high-value opportunities, focused on India.
 
-1. SDE internship applications at top product companies
-2. Major India-focused hackathons and coding challenges
+- SDE internship applications at top product companies
+- Major hackathons and coding events in India
 
-It discovers opportunities, filters noise, prioritizes direct apply links, enforces India-only mode, and sends formatted email alerts.
+The bot collects opportunities, filters low-signal results, resolves direct apply links, and delivers structured email alerts.
 
-## Highlights
+## Why this is useful
 
-- Direct application link prioritization
-- India-only filtering support
-- Query-based company/event targeting
-- Email alerts with structured role details
-- Local run, Docker run, and Vercel API support
-- Stateful dedupe locally (SQLite) and optional serverless dedupe via Upstash
+- No homepage spam: direct-apply-first workflow
+- India-first filtering for both jobs and hackathons
+- Reusable query rules in YAML
+- Works locally, in Docker, and on Vercel APIs
+- Dedupe support: SQLite locally, Upstash option for serverless
 
-## Project Layout
+## Core capabilities
 
-- `src/alerts.py` - core pipeline (fetch, filter, dedupe, format, notify)
-- `src/run_jobs_alerts.py` - jobs runner
-- `src/run_hackathon_alerts.py` - hackathons runner
-- `config/jobs_queries.yaml` - jobs query rules
-- `config/hackathons_queries.yaml` - hackathon query rules
-- `api/jobs.py` - Vercel API endpoint for jobs
-- `api/hackathons.py` - Vercel API endpoint for hackathons
-- `api/health.py` - Vercel health endpoint
-- `vercel.json` - Vercel function config
-- `outputs/` - generated markdown reports
-- `data/seen_items.db` - local dedupe store
+| Capability | What it does |
+|---|---|
+| Jobs discovery | Finds internship roles from trusted company domains |
+| Hackathon discovery | Finds relevant India-focused events/challenges |
+| Direct apply enforcement | Keeps direct application links in strict mode |
+| India-only mode | Drops non-India opportunities |
+| Email formatting | Sends readable, structured alert messages |
+| Dedupe | Prevents repeat alerts for previously seen items |
 
-## Quick Start (Local Python)
+## Project map
+
+- [src/alerts.py](src/alerts.py): core pipeline (fetch, filter, dedupe, notify)
+- [src/run_jobs_alerts.py](src/run_jobs_alerts.py): jobs runner
+- [src/run_hackathon_alerts.py](src/run_hackathon_alerts.py): hackathons runner
+- [config/jobs_queries.yaml](config/jobs_queries.yaml): jobs rules
+- [config/hackathons_queries.yaml](config/hackathons_queries.yaml): hackathons rules
+- [api/jobs.py](api/jobs.py): Vercel jobs endpoint
+- [api/hackathons.py](api/hackathons.py): Vercel hackathons endpoint
+- [api/health.py](api/health.py): health endpoint
+- [vercel.json](vercel.json): Vercel runtime config
+- [outputs](outputs): generated reports
+- [data/seen_items.db](data/seen_items.db): local dedupe DB
+
+## Local quick start
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-```
-
-Copy environment template:
-
-```powershell
 copy .env.example .env
 ```
 
@@ -56,47 +61,34 @@ Run hackathons:
 python src/run_hackathon_alerts.py
 ```
 
-## Docker Usage
-
-Build:
+## Docker
 
 ```powershell
 docker compose build
-```
-
-Run jobs once:
-
-```powershell
 docker compose run --rm jobs-alerts
-```
-
-Run hackathons once:
-
-```powershell
 docker compose run --rm hackathon-alerts
 ```
 
-## Vercel Deployment
+## Vercel API mode
 
-Current Vercel endpoints:
+Available endpoints:
 
 - `/api/jobs`
 - `/api/hackathons`
+- `/api/cron`
 - `/api/health`
 
-Useful query params for `/api/jobs` and `/api/hackathons`:
+Useful params:
 
 - `max_results=5`
 - `format=markdown`
 
-Example:
+Examples:
 
 - `/api/jobs?max_results=5`
 - `/api/hackathons?format=markdown`
 
-### Vercel environment variables
-
-Required:
+## Required environment variables
 
 - `EMAIL_ENABLED`
 - `SMTP_HOST`
@@ -114,12 +106,12 @@ Optional:
 - `UPSTASH_REDIS_REST_URL`
 - `UPSTASH_REDIS_REST_TOKEN`
 
-## Query Configuration
+## Query configuration
 
-Editable files:
+Edit:
 
-- `config/jobs_queries.yaml`
-- `config/hackathons_queries.yaml`
+- [config/jobs_queries.yaml](config/jobs_queries.yaml)
+- [config/hackathons_queries.yaml](config/hackathons_queries.yaml)
 
 Per-query keys:
 
@@ -138,23 +130,23 @@ Global keys:
 - `direct_apply_only`
 - `india_only`
 
-## Alert Rules in Plain Words
+## Alert policy
 
-- Only trusted domains are allowed (when configured).
-- Only direct application pages are retained in strict mode.
-- If direct apply page is not found, message explicitly says so.
-- India-only mode drops non-India opportunities.
+- Trusted domains only when configured
+- Direct-apply links only in strict mode
+- If direct apply is unavailable: message states it clearly
+- India-only mode removes non-India results
 
 ## Scheduling (Windows)
 
-The repo includes a task-runner script:
+Runner script:
 
-- `run_jobs_alerts_docker.bat`
+- [run_jobs_alerts_docker.bat](run_jobs_alerts_docker.bat)
 
-You can schedule it via Task Scheduler (already configured in this workspace as `Job Alerts Every 3 Hours`).
+Task Scheduler can run it every 3 hours (already configured in this workspace as `Job Alerts Every 3 Hours`).
 
-## Notes
+## Operational notes
 
-- Local dedupe uses SQLite in `data/seen_items.db`.
-- Serverless filesystems are ephemeral; use Upstash for persistent dedupe on Vercel.
-- Search result quality depends on query quality; tune YAML rules regularly.
+- Local dedupe persists in SQLite ([data/seen_items.db](data/seen_items.db))
+- Serverless filesystems are ephemeral; use Upstash for persistent dedupe
+- Query quality directly impacts alert quality

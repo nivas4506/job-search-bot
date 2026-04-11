@@ -120,30 +120,31 @@
         <div class="grid">
           <article class="card">
             <h2>Jobs API</h2>
-            <p>Fetch current SDE intern matches as JSON or Markdown.</p>
+            <p>Run the jobs pipeline and return only new matches after dedupe.</p>
             <p><a href="/api/jobs">/api/jobs</a></p>
             <p><a href="/api/jobs?format=markdown">/api/jobs?format=markdown</a></p>
           </article>
 
           <article class="card">
             <h2>Hackathons API</h2>
-            <p>Fetch current hackathon matches as JSON or Markdown.</p>
+            <p>Run the hackathons pipeline and return only new matches after dedupe.</p>
             <p><a href="/api/hackathons">/api/hackathons</a></p>
             <p><a href="/api/hackathons?format=markdown">/api/hackathons?format=markdown</a></p>
           </article>
 
           <article class="card">
-            <h2>Health</h2>
-            <p>Check preview status and deployment mode.</p>
+            <h2>Cron + Health</h2>
+            <p>Manual combined trigger plus lightweight service health endpoint.</p>
+            <p><a href="/api/cron">/api/cron</a></p>
             <p><a href="/api/health">/api/health</a></p>
-            <p><code>max_results=5</code> is supported on API routes.</p>
+            <p><code>max_results=5</code> is supported on jobs and hackathons endpoints.</p>
           </article>
         </div>
 
         <div class="note">
           Deployed mode limitation: Vercel Functions provide read-only filesystems with writable
-          <code>/tmp</code> scratch space only, and SQLite is not durable there, so this preview
-          does not persist dedupe state between invocations.
+          <code>/tmp</code> scratch space only. Durable dedupe across cold starts requires the
+          optional Upstash Redis environment variables shown in <code>.env.example</code>.
         </div>
       </section>
     </main>
