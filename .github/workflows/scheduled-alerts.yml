@@ -170,10 +170,10 @@ jobs:
           PY
 
       - name: Run jobs alerts
-        run: python src/run_jobs_alerts.py
+        run: python -m src.run_jobs_alerts
 
       - name: Run hackathon alerts
-        run: python src/run_hackathon_alerts.py
+        run: python -m src.run_hackathon_alerts
 
       - name: Upload generated reports
         if: always()
