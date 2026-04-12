@@ -81,18 +81,18 @@ jobs:
                       f.write(f"{key}={value}\n")
           PY
 
-          - name: Load .env fallback values
-          if: hashFiles('.env') != ''
-          run: |
-            python - <<'PY'
-            import os
-            from pathlib import Path
+      - name: Load .env fallback values
+        if: hashFiles('.env') != ''
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
 
-            env_path = Path('.env')
-            if not env_path.exists():
+          env_path = Path('.env')
+          if not env_path.exists():
               raise SystemExit(0)
 
-            keys = {
+          keys = {
               "EMAIL_ENABLED",
               "SMTP_HOST",
               "SMTP_PORT",
@@ -104,30 +104,30 @@ jobs:
               "MAX_RESULTS_PER_QUERY",
               "UPSTASH_REDIS_REST_URL",
               "UPSTASH_REDIS_REST_TOKEN",
-            }
+          }
 
-            values = {}
-            for raw_line in env_path.read_text(encoding='utf-8').splitlines():
+          values = {}
+          for raw_line in env_path.read_text(encoding='utf-8').splitlines():
               line = raw_line.strip()
               if not line or line.startswith('#') or '=' not in line:
-                continue
+                  continue
               key, value = line.split('=', 1)
               key = key.strip()
               if key not in keys:
-                continue
+                  continue
               value = value.strip().strip('"').strip("'")
               if value:
-                values[key] = value
+                  values[key] = value
 
-            target = os.environ["GITHUB_ENV"]
-            with open(target, "a", encoding="utf-8") as f:
+          target = os.environ["GITHUB_ENV"]
+          with open(target, "a", encoding="utf-8") as f:
               for key in sorted(keys):
-                if os.getenv(key, "").strip():
-                  continue
-                value = values.get(key, "").strip()
-                if value:
-                  f.write(f"{key}={value}\n")
-            PY
+                  if os.getenv(key, "").strip():
+                      continue
+                  value = values.get(key, "").strip()
+                  if value:
+                      f.write(f"{key}={value}\n")
+          PY
 
       - name: Debug resolved configuration presence
         run: |
