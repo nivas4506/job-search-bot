@@ -56,16 +56,26 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
+Install as a package in editable mode:
+
+```powershell
+pip install -e .
+```
+
 Run jobs:
 
 ```powershell
 python src/run_jobs_alerts.py
+# or, after package install:
+jobs-alerts
 ```
 
 Run hackathons:
 
 ```powershell
 python src/run_hackathon_alerts.py
+# or, after package install:
+hackathon-alerts
 ```
 
 ## Docker

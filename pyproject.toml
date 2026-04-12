@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "job-search-bot"
+version = "0.1.0"
+description = "Automated India-focused SDE internship and hackathon email alerts"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+  { name = "nivas4506" }
+]
+dependencies = [
+  "requests>=2.32.0",
+  "feedparser>=6.0.11",
+  "PyYAML>=6.0.1",
+  "python-dotenv>=1.0.1"
+]
+
+[project.scripts]
+jobs-alerts = "src.run_jobs_alerts:main"
+hackathon-alerts = "src.run_hackathon_alerts:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src", "src.*", "api", "api.*"]
