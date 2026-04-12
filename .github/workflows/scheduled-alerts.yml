@@ -21,10 +21,10 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -170,14 +170,14 @@ jobs:
           PY
 
       - name: Run jobs alerts
-        run: python src/run_jobs_alerts.py
+        run: python -m src.run_jobs_alerts
 
       - name: Run hackathon alerts
-        run: python src/run_hackathon_alerts.py
+        run: python -m src.run_hackathon_alerts
 
       - name: Upload generated reports
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: alert-reports-${{ github.run_id }}
           path: outputs/*.md
