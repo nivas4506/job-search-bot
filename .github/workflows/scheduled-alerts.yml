@@ -15,20 +15,21 @@ permissions:
 jobs:
   send-alerts:
     runs-on: ubuntu-latest
+    environment: production
     timeout-minutes: 30
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
-      SMTP_HOST: ${{ secrets.SMTP_HOST }}
-      SMTP_PORT: ${{ secrets.SMTP_PORT }}
-      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-      SMTP_USE_TLS: ${{ secrets.SMTP_USE_TLS }}
-      ALERT_FROM_EMAIL: ${{ secrets.ALERT_FROM_EMAIL }}
-      ALERT_TO_EMAIL: ${{ secrets.ALERT_TO_EMAIL }}
-      MAX_RESULTS_PER_QUERY: ${{ secrets.MAX_RESULTS_PER_QUERY }}
-      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
-      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+      EMAIL_ENABLED: "${{ secrets.EMAIL_ENABLED || vars.EMAIL_ENABLED }}"
+      SMTP_HOST: "${{ secrets.SMTP_HOST || vars.SMTP_HOST }}"
+      SMTP_PORT: "${{ secrets.SMTP_PORT || vars.SMTP_PORT }}"
+      SMTP_USERNAME: "${{ secrets.SMTP_USERNAME || vars.SMTP_USERNAME }}"
+      SMTP_PASSWORD: "${{ secrets.SMTP_PASSWORD || vars.SMTP_PASSWORD }}"
+      SMTP_USE_TLS: "${{ secrets.SMTP_USE_TLS || vars.SMTP_USE_TLS }}"
+      ALERT_FROM_EMAIL: "${{ secrets.ALERT_FROM_EMAIL || vars.ALERT_FROM_EMAIL }}"
+      ALERT_TO_EMAIL: "${{ secrets.ALERT_TO_EMAIL || vars.ALERT_TO_EMAIL }}"
+      MAX_RESULTS_PER_QUERY: "${{ secrets.MAX_RESULTS_PER_QUERY || vars.MAX_RESULTS_PER_QUERY }}"
+      UPSTASH_REDIS_REST_URL: "${{ secrets.UPSTASH_REDIS_REST_URL || vars.UPSTASH_REDIS_REST_URL }}"
+      UPSTASH_REDIS_REST_TOKEN: "${{ secrets.UPSTASH_REDIS_REST_TOKEN || vars.UPSTASH_REDIS_REST_TOKEN }}"
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
@@ -55,7 +56,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Validate required secrets
+      - name: Validate required configuration
         run: |
           python - <<'PY'
           import os
@@ -72,7 +73,7 @@ jobs:
           ]
           missing = [key for key in required if not os.getenv(key, "").strip()]
           if missing:
-              raise SystemExit(f"Missing GitHub Actions secrets: {', '.join(missing)}")
+              raise SystemExit(f"Missing GitHub Actions secrets or variables: {', '.join(missing)}")
           PY
 
       - name: Run jobs alerts
