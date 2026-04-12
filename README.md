@@ -186,6 +186,24 @@ Optional secrets:
 
 Without Upstash, the workflow falls back to a GitHub Actions cache for `data/seen_items.db`.
 
+## Package publishing (PyPI)
+
+This repository includes [.github/workflows/publish-pypi.yml](.github/workflows/publish-pypi.yml),
+which publishes the package to PyPI when you push a version tag like `v0.1.0`.
+
+One-time setup:
+
+- Create the `job-search-bot` project on PyPI.
+- Configure Trusted Publishing on PyPI for this GitHub repository and workflow.
+- Optionally create a GitHub environment named `pypi`.
+
+Release command:
+
+```powershell
+git tag v0.1.0
+git push origin v0.1.0
+```
+
 ## Operational notes
 
 - Local dedupe persists in SQLite ([data/seen_items.db](data/seen_items.db))

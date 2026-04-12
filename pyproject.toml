@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Automated India-focused SDE internship and hackathon email alerts"
 readme = "README.md"
 requires-python = ">=3.12"
-license = { text = "MIT" }
+license = "MIT"
 authors = [
   { name = "nivas4506" }
 ]
