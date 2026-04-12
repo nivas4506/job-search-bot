@@ -97,21 +97,25 @@ Examples:
 
 ## Required environment variables
 
-- `EMAIL_ENABLED`
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USERNAME`
-- `SMTP_PASSWORD`
-- `SMTP_USE_TLS`
-- `ALERT_FROM_EMAIL`
-- `ALERT_TO_EMAIL`
-- `MAX_RESULTS_PER_QUERY`
+| Name | Example value |
+|---|---|
+| `EMAIL_ENABLED` | `true` |
+| `SMTP_HOST` | `smtp.gmail.com` |
+| `SMTP_PORT` | `587` |
+| `SMTP_USERNAME` | `your-email@gmail.com` |
+| `SMTP_PASSWORD` | `your-app-password` |
+| `SMTP_USE_TLS` | `true` |
+| `ALERT_FROM_EMAIL` | `your-email@gmail.com` |
+| `ALERT_TO_EMAIL` | `recipient@gmail.com` |
+| `MAX_RESULTS_PER_QUERY` | `10` |
 
 Optional:
 
-- `CRON_SECRET`
-- `UPSTASH_REDIS_REST_URL`
-- `UPSTASH_REDIS_REST_TOKEN`
+| Name | Example value |
+|---|---|
+| `CRON_SECRET` | `replace_with_long_random_secret` |
+| `UPSTASH_REDIS_REST_URL` | `your Upstash Redis URL` |
+| `UPSTASH_REDIS_REST_TOKEN` | `your Upstash Redis token` |
 
 ## Query configuration
 
@@ -159,20 +163,24 @@ which runs both alert pipelines every 3 hours on GitHub Actions.
 
 Required GitHub Actions secrets:
 
-- `EMAIL_ENABLED`
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USERNAME`
-- `SMTP_PASSWORD`
-- `SMTP_USE_TLS`
-- `ALERT_FROM_EMAIL`
-- `ALERT_TO_EMAIL`
-- `MAX_RESULTS_PER_QUERY`
+| Name | Example value |
+|---|---|
+| `EMAIL_ENABLED` | `true` |
+| `SMTP_HOST` | `smtp.gmail.com` |
+| `SMTP_PORT` | `587` |
+| `SMTP_USERNAME` | `your-email@gmail.com` |
+| `SMTP_PASSWORD` | `your-app-password` |
+| `SMTP_USE_TLS` | `true` |
+| `ALERT_FROM_EMAIL` | `your-email@gmail.com` |
+| `ALERT_TO_EMAIL` | `recipient@gmail.com` |
+| `MAX_RESULTS_PER_QUERY` | `10` |
 
 Optional secrets:
 
-- `UPSTASH_REDIS_REST_URL`
-- `UPSTASH_REDIS_REST_TOKEN`
+| Name | Example value |
+|---|---|
+| `UPSTASH_REDIS_REST_URL` | `your Upstash Redis URL` |
+| `UPSTASH_REDIS_REST_TOKEN` | `your Upstash Redis token` |
 
 Without Upstash, the workflow falls back to a GitHub Actions cache for `data/seen_items.db`.
 

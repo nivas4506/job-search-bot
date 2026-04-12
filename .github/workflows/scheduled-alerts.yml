@@ -129,6 +129,26 @@ jobs:
                   f.write(f"{key}={value}\n")
             PY
 
+      - name: Debug resolved configuration presence
+        run: |
+          python - <<'PY'
+          import os
+          required = [
+              "EMAIL_ENABLED",
+              "SMTP_HOST",
+              "SMTP_PORT",
+              "SMTP_USERNAME",
+              "SMTP_PASSWORD",
+              "SMTP_USE_TLS",
+              "ALERT_FROM_EMAIL",
+              "ALERT_TO_EMAIL",
+              "MAX_RESULTS_PER_QUERY",
+          ]
+          print(f"GITHUB_SHA={os.getenv('GITHUB_SHA', '')}")
+          for key in required:
+              print(f"{key}={'set' if os.getenv(key, '').strip() else 'missing'}")
+          PY
+
       - name: Validate required configuration
         run: |
           python - <<'PY'
